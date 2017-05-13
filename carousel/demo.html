@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>分页demo</title>
+<style>
+    #carousel{
+        width: 600px;
+        height: 400px;
+        margin: 120px auto;
+    }
+    #one{
+        background: url('http://photocdn.sohu.com/20121219/Img360946488.jpg');
+    }
+    #two{
+        background: url('http://images.quanjing.com/xxx_rf001/high/sf_111115_3145_submit.jpg');
+    }
+    #three{
+        background: url('http://images.quanjing.com/chineseview086/high/zrgrfing-006994.jpg');
+    }
+    #four{
+        background: url('http://images.orderpic.com/top036/high/top-971856.jpg');
+    }
+    #five{
+        background: url('https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494705270929&di=6de8180abad432e0c275b4fe29e8d660&imgtype=0&src=http%3A%2F%2Fy0.ifengimg.com%2Fcmpp%2F2015%2F03%2F12%2F02%2Ff2f1a97d-6d2b-49f5-9686-e3bb1670ab96_size57_w600_h400.jpg');
+    }
+
+    .last, .next{
+        width: 50px;
+        height: 40%;
+        top: 50%;
+        margin-top: -17%;
+        background: black;
+        opacity: 0;
+        transition: opacity .5s;
+    }
+    .next{
+        right: 0;
+    }
+
+    #carousel:hover .last, #carousel:hover .next{
+        opacity: .5;
+    }
+
+    .indicator{
+        position: absolute;
+        background: white;
+        opacity: .8;
+        bottom: 0;
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    .indicator a{
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: 0 20px;
+        font-weight: bold;
+        text-decoration: none;
+        box-sizing: border-box;
+        line-height: 38px;
+    }
+
+    .indicator a:hover, .active{
+        border: 1px solid #333;
+        border-radius: 50%;
+    }
+</style>
+</head>
+<body>
+    <div id="carousel">
+        <a id="one" href="#"></a>
+        <a id="two" href="#"></a>
+        <a id="three" href="#"></a>
+        <a id="four" href="#"></a>
+        <a id="five" href="#"></a>
+    </div>
+    
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="carousel.js"></script>
+    <script type="text/javascript">
+        $('#carousel').carousel({
+            'interval': 3000,
+            'speed': 500,
+            'showLastNext': true,
+            'showIndicator': true,
+            'lastClass': 'last',
+            'nextClass': 'next',
+            'indicatorClass': 'indicator',
+            'activeIndicator': 'active'
+        });
+    </script>
+</body>
+</html>
