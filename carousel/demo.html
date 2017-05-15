@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, user-scalable=no">
 <title>分页demo</title>
 <style>
     #carousel{
@@ -28,8 +29,7 @@
     .last, .next{
         width: 50px;
         height: 40%;
-        top: 50%;
-        margin-top: -17%;
+        top: 30%;
         background: black;
         opacity: 0;
         transition: opacity .5s;
@@ -54,18 +54,30 @@
 
     .indicator a{
         display: inline-block;
-        width: 40px;
-        height: 40px;
+        width: 25px;
+        height: 25px;
         margin: 0 20px;
         font-weight: bold;
         text-decoration: none;
         box-sizing: border-box;
-        line-height: 38px;
+        line-height: 25px;
+        color: #666;
     }
 
-    .indicator a:hover, .active{
+    .hover{
+        border: 1px solid #666;
+        border-radius: 50%;
+    }
+
+    .active{
         border: 1px solid #333;
         border-radius: 50%;
+    }
+
+    @media screen and (max-width: 1080px) {
+        .last, .next{
+            display: none;
+        }
     }
 </style>
 </head>
@@ -82,14 +94,14 @@
     <script type="text/javascript" src="carousel.js"></script>
     <script type="text/javascript">
         $('#carousel').carousel({
-            'interval': 3000,
+            'interval': 2000,
             'speed': 500,
             'showLastNext': true,
-            'showIndicator': true,
             'lastClass': 'last',
             'nextClass': 'next',
             'indicatorClass': 'indicator',
-            'activeIndicator': 'active'
+            'activeIndicator': 'active',
+            'hoverIndicator': 'hover'
         });
     </script>
 </body>

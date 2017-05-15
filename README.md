@@ -50,6 +50,10 @@ https://caojiantao.github.io/jquery-plugins/carousel/demo.html
 
 ### 更新说明
 
+#### 2017-05-16
+
+增加响应式设计，完善移动端hover事件处理。
+
 #### 2017-05-14
 
 完成轮播插件的开发，可配置上下页和页码选择，编写轮播方式为无限循环。
