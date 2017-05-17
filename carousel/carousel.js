@@ -58,6 +58,11 @@
             var carousel = this;
             var interval = carousel.opt.interval;
             var $ele = carousel.$ele;
+            // 移动设备判断
+            var m = (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i));
+            this.isMobile = (m != null);
+
+            var $ele = this.$ele;
             var width = $ele.width();
             var pages = $ele.children();
             var pageCount = pages.length;
@@ -321,7 +326,6 @@
                 $pageBox.append($pageBox.children(':first'));
             }
             $pageBox.css({'margin-left': '-' + width + 'px'});
-
 
             if (this.opt.showIndicator) {
                 var $indicator = carousel.$indicator;
