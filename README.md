@@ -42,13 +42,21 @@ https://caojiantao.github.io/jquery-plugins/carousel/demo.html
         // 页码指示器div class名称
         'indicatorClass': 'indicator',
         // 当前页码class名称
-        'activeIndicator': 'active'
+        'activeIndicator': 'active',
+        // PC段indicator hover样式
+        'hoverIndicator': 'hover',
+        // 是否支持响应式
+        'responsive': true
     });
 </script>
 ```
 然后根据配置的class名称可以编写对应的css美化布局。
 
 ### 更新说明
+
+#### 2017-05-18
+
+增加手势操作，完善touch触摸事件处理。
 
 #### 2017-05-16
 
