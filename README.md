@@ -56,6 +56,10 @@ https://caojiantao.github.io/jquery-plugins/carousel/demo.html
 
 #### 2017-05-18
 
+规范整理代码，处理滚动过程中touch事件。
+
+#### 2017-05-18
+
 增加手势操作，完善touch触摸事件处理。
 
 #### 2017-05-16
