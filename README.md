@@ -69,3 +69,44 @@ https://caojiantao.github.io/jquery-plugins/carousel/demo.html
 #### 2017-05-14
 
 完成轮播插件的开发，可配置上下页和页码选择，编写轮播方式为无限循环。
+
+## Ajax分页:  
+
+自定义分页首选，Ajax结合数据库分页，效果是极好，没毛病。
+
+### 演示地址
+
+https://caojiantao.github.io/jquery-plugins/page/demo.html
+
+### 使用方式
+
+```
+<script type="text/javascript" src="page.js"></script>
+<script>
+    $(".test").page({
+        // ajax地址
+        'url': 'data.json',
+        // 最大可见分页按钮数
+        'maxShowItem': 7,
+        // ajax请求附带参数
+        'data': {
+            'limit': 6,
+            'attr': 'attr'
+        },
+        'currentClass': 'currentPage',
+        'activeClass': 'active',
+        'disabledClass': 'disabled',
+        'callback': function(currentPage, pageCount, obj){
+            // 处理分页内容
+            console.log(currentPage, pageCount, obj);
+        }
+    });
+</script>
+```
+对外提供分页按钮class名称，自由编写css样式。
+
+### 更新说明
+
+#### 2017-05-19
+
+编写分页雏形发布。
