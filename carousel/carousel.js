@@ -42,7 +42,7 @@
             if(this.opt.showIndicator){
                 this.$indicator = this.initIndicator();
             }
-            // 响应式设计
+            // // 响应式设计
             if (this.opt.responsive) {
                 this.initResponsive();
             }
@@ -57,8 +57,8 @@
 
             var $ele = carousel.$ele;
             var width = $ele.width();
-            var pages = $ele.children();
-            var pageCount = pages.length;
+            var $pages = $ele.children();
+            var pageCount = $pages.length;
             var $pageBox = $('<div></div>');
             // 初始化轮播容器的css属性和各轮播图的css属性
             $ele.css({
@@ -67,15 +67,15 @@
             });
             $pageBox.css({
                 'position': 'absolute',
-                'width': width * pageCount + 'px',
+                'width': width * (pageCount + 2) + 'px',
                 'height': 'inherit'
             });
-            pages.each(function(index){
+            $pages.each(function(index){
                 var $this = $(this);
                 $this.data('index', index + 1);
                 $this.css({
                     'display': 'block',
-                    'width': 100 / pageCount + '%',
+                    'width': width + 'px',
                     'height': 'inherit',
                     'float': 'left',
                     'background-position': 'center center',
@@ -84,7 +84,16 @@
                 // append方法类似剪切，而不是复制粘贴，遍历完children自然为空
                 $pageBox.append($this);
             });
+            // 首尾复制添加，达到无限循环的效果
+            var $firstTemp = $pages.first().clone(true);
+            $firstTemp.insertAfter($pages.last());
+            var $lastTemp = $pages.last().clone(true);
+            $lastTemp.insertBefore($pages.first());
+            // 控制margin-left，初始化显示
+            $pageBox.css('marginLeft', -width + 'px');
             $ele.append($pageBox);
+
+            
             // 为整个轮播控件绑定类似hover事件（用js实现便于移动端的控制）
             $ele.on({
                 'mouseenter': function(){
@@ -96,10 +105,6 @@
                     carousel.timer = setInterval(carousel.scrollNext, interval, carousel);
                 }
             });
-            // 将最后一页内容移动到最前面
-            var lastPage = $pageBox.children().last();
-            $pageBox.prepend(lastPage);
-            $pageBox.css({'margin-left': '-' + width + 'px'});
             return $pageBox;
         },
         // 展示上下页选项
@@ -120,9 +125,11 @@
         // 展示页码指示器
         'initIndicator': function(){
             var carousel = this;
+            // 这里是真是的page个数，需要减去首尾的两项
+            var realPageCount = carousel.$pageBox.children().length - 2;
             var $indicator = $('<div></div>');
             $indicator.addClass(carousel.opt.indicatorClass);
-            carousel.$pageBox.children().each(function(index){
+            for (var index = 0; index < realPageCount; index++) {
                 var $item = $('<a href=\'javascript:;\'>' + (index + 1) + '</a>');
                 $item.data('index', index + 1);
                 if (index == 0) {
@@ -130,11 +137,11 @@
                     $item.addClass(carousel.opt.activeIndicator);
                 }
                 $indicator.append($item);
-            });
+            }
             // 分页按钮绑定类似hover事件
             $indicator.children().on({
                 'mouseenter': function(){
-                    $(this).addClass(carousel.opt.hoverIndicator);
+                    $(this).addClass(carousel.opt.hoverIndicator); 
                 },
                 'mouseleave': function(){
                     $(this).removeClass(carousel.opt.hoverIndicator);
@@ -181,6 +188,7 @@
                 'marginLeft': -1 * $ele.outerWidth() + 'px',
                 'height': $ele.outerHeight() + 'px'
             });
+            $pageBox.children().css('width', $ele.outerWidth());
             // pageBox布局的touch事件处理
             var touched = false;
             var horizontal = true;
@@ -189,6 +197,7 @@
                     $(this).stop(true);
                     clearInterval(carousel.timer);
                     var touch = e.originalEvent.changedTouches[0];
+                    carousel.touchMarginLeft = touch.pageX;
                     carousel.lastTouchX = touch.pageX;
                     carousel.lastTouchY = touch.pageY;
                     touched = true;
@@ -213,28 +222,33 @@
                         }
                         $(this).css('marginLeft', offsetX);
                         carousel.lastTouchX = touch.pageX;
+                        carousel.lastTouchY = touch.pageY;
                     } else{
                         // 上下滑动则不作处理
                     }
                 },
                 'touchend': function(e){
+                    var touch = e.originalEvent.changedTouches[0];
+
                     var $this = $(this);
                     var curMarginLeft = parseInt($this.css('marginLeft'));
                     var width = $ele.outerWidth();
                     var marginLeft;
 
-                    var tempX = curMarginLeft + width;
-                    if (tempX <=  -width / 4) {
-                        marginLeft = -2 * width;
-                    } else if(tempX > -width / 4 && tempX < width / 4) {
-                        marginLeft = -width;
-                    } else {
-                        marginLeft = 0;
+                    var offsetMarginLeft = touch.pageX - carousel.touchMarginLeft;
+                    var toMarginLeft;
+                    if (offsetMarginLeft <= -width / 4) {
+                        // 触发左右滑动动画
+                        toMarginLeft = Math.floor(curMarginLeft / width) * width + 'px';
+                    } else if(offsetMarginLeft >= width / 4){
+                        toMarginLeft = Math.ceil(curMarginLeft / width) * width + 'px';
+                    } else{
+                        // 回弹原来位置
+                        toMarginLeft = Math.round(curMarginLeft / width) * width + 'px';
                     }
-                    var time = Math.abs((marginLeft - curMarginLeft) / width * carousel.opt.speed);
                     $this.animate({
-                            'marginLeft': marginLeft + 'px'
-                    }, time, 'linear', function(){
+                            'marginLeft': toMarginLeft
+                    }, carousel.opt.speed, function(){
                         // 动画结束重新启用定时器
                         carousel.callback(marginLeft);
                         carousel.timer = setInterval(carousel.scrollNext, interval, carousel);
@@ -271,18 +285,15 @@
 
             var carousel = this;
 
+            var sign = offset > 0 ? '-=' : '+=';
             var $pageBox = carousel.$pageBox;
             var width = carousel.$ele.outerWidth();
-            var marginLeft = (offset > 0) ? (-2 * width) : 0;
-            var loop = Math.abs(offset);
-            var perTime = carousel.opt.speed / loop;
-            for (var i = 0; i < loop; i++) {
-                $pageBox.animate({
-                    'margin-left': marginLeft + 'px'
-                }, perTime, 'linear', function(){
-                    carousel.callback(marginLeft);
-                });
-            }
+
+            $pageBox.animate({
+                'marginLeft': sign + Math.abs(offset * width) + 'px'
+            }, carousel.opt.speed, function(){
+                carousel.callback();
+            });
         },
         // 获取当前页码，返回-1代表正在轮播滚动中
         'getCurPage': function(){
@@ -291,20 +302,23 @@
             var $pageBox = this.$pageBox;
             var marginLeft = parseInt($pageBox.css('marginLeft'));
             if (marginLeft % width == 0){
-                curPage = $pageBox.children(':eq(1)').data('index');
+                // 先计算出当前page是第几个元素，然后根据data取值
+                var index = Math.abs(marginLeft / width);
+                curPage = $pageBox.children(':eq('+ index +')').data('index');
             }
             return parseInt(curPage);
         },
         // 动画结束回调
-        'callback': function(marginLeft){
-            var width = this.$ele.width();
+        'callback': function(){
+            var width = this.$ele.outerWidth();
             var $pageBox = this.$pageBox;
+            var pageCount = $pageBox.children().length;
+            var marginLeft = parseInt($pageBox.css('marginLeft'));
             if (marginLeft == 0) {
-                $pageBox.prepend($pageBox.children().last());
-            } else if(marginLeft == -2 * width){
-                $pageBox.append($pageBox.children().first());
+                $pageBox.css('marginLeft', -width * (pageCount - 2) + 'px');
+            } else if(marginLeft == -width * (pageCount - 1)){
+                $pageBox.css('marginLeft', -width + 'px');
             }
-            $pageBox.css({'margin-left': '-' + width + 'px'});
 
             if (this.opt.showIndicator) {
                 var $indicator = this.$indicator;

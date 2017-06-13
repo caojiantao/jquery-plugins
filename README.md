@@ -54,6 +54,10 @@ https://caojiantao.github.io/jquery-plugins/carousel/demo.html
 
 ### 更新说明
 
+#### 2017-06-14
+
+修改循环方式为首尾复制，优化js，添加测试图片文件夹，兼容好touch事件。
+
 #### 2017-05-18
 
 规范整理代码，处理滚动过程中touch事件。
